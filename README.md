@@ -23,6 +23,8 @@ Summary and examples from the book Effective Python, 2nd edition
     - [Item 16: Prefer `get` Over `in` and `KeyError` to Handle Missing Dictionary Keys](#item-16-prefer-get-over-in-and-keyerror-to-handle-missing-dictionary-keys)
     - [Item 17: Prefer `defaultdict` Over `setdefault` to Handle Missing Items in Internal State](#item-17-prefer-defaultdict-over-setdefault-to-handle-missing-items-in-internal-state)
     - [Item 18: Know How to Construct Key-Dependent Default Values with `__missing__`](#item-18-know-how-to-construct-key-dependent-default-values-with-__missing__)
+  - [3. Functions](#3-functions)
+    - [Item 19: Never Unpack More Than Three Variables When Functions Return Multiple Values](#item-19-never-unpack-more-than-three-variables-when-functions-return-multiple-values)
   - [Source](#source)
 
 ## 1. Pythonic Thinking
@@ -323,6 +325,18 @@ Summary and examples from the book Effective Python, 2nd edition
 - You can define your own `dict` subclass with a `__missing__` method in order to construct default values that must know which key was being accessed
   - the `__missing__` method is called only when the key is not present in the dictionary
   - see `test_missing()`
+
+## 3. Functions
+
+### Item 19: Never Unpack More Than Three Variables When Functions Return Multiple Values
+
+- One effect of the unpacking syntax is that it allows Python functions to seemingly return more than one value
+  - `return minimum, maximum`
+  - multiple values are returned in a two-item tuple
+- Problems when functions return many values:
+  - extremely error prone - too easy to reorder them accidentally while unpacking
+  - the line that calls the function and unpacks the values is long, and it will likely need to be wrapped, which hurts readability
+- You're better off having your function return an instance of a lightweight class or `namedtuple` instead
 
 ## Source
 
