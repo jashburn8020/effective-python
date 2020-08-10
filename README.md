@@ -25,6 +25,7 @@ Summary and examples from the book Effective Python, 2nd edition
     - [Item 18: Know How to Construct Key-Dependent Default Values with `__missing__`](#item-18-know-how-to-construct-key-dependent-default-values-with-__missing__)
   - [3. Functions](#3-functions)
     - [Item 19: Never Unpack More Than Three Variables When Functions Return Multiple Values](#item-19-never-unpack-more-than-three-variables-when-functions-return-multiple-values)
+    - [Item 20: Prefer Raising Exceptions to Returning `None`](#item-20-prefer-raising-exceptions-to-returning-none)
   - [Source](#source)
 
 ## 1. Pythonic Thinking
@@ -337,6 +338,20 @@ Summary and examples from the book Effective Python, 2nd edition
   - extremely error prone - too easy to reorder them accidentally while unpacking
   - the line that calls the function and unpacks the values is long, and it will likely need to be wrapped, which hurts readability
 - You're better off having your function return an instance of a lightweight class or `namedtuple` instead
+
+### Item 20: Prefer Raising Exceptions to Returning `None`
+
+- See [`raising_exceptions_test.py`](src/ch03/raising_exceptions_test.py)
+- When writing utility functions, there’s a draw for Python programmers to give special meaning to the return value of `None`
+  - e.g., for a helper function that divides one number with another, returning `None` when dividing by zero seems natural because the result is undefined
+- However you might accidentally look for any `False`-equivalent value (such as in an `if` statement) to indicate errors, and wrongly interpret a zero return value
+  - `if not result:`
+- A good way to reduce such errors is to never return `None` for special cases, and instead raise an `Exception` up to the caller
+  - the caller can assume that the return value is always valid and use the result immediately in the `else` block after `try`
+  - you can extend this approach by using type annotations
+    - specify that the function's return value will never be a `None`
+  - document the exception-raising behaviour using docstring so that callers will know which `Exception` they should plan to catch
+  - see `test_raise_exception()`
 
 ## Source
 
