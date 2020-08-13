@@ -26,6 +26,7 @@ Summary and examples from the book Effective Python, 2nd edition
   - [3. Functions](#3-functions)
     - [Item 19: Never Unpack More Than Three Variables When Functions Return Multiple Values](#item-19-never-unpack-more-than-three-variables-when-functions-return-multiple-values)
     - [Item 20: Prefer Raising Exceptions to Returning `None`](#item-20-prefer-raising-exceptions-to-returning-none)
+    - [Item 21: Know How Closures Interact with Variable Scope](#item-21-know-how-closures-interact-with-variable-scope)
   - [Source](#source)
 
 ## 1. Pythonic Thinking
@@ -352,6 +353,31 @@ Summary and examples from the book Effective Python, 2nd edition
     - specify that the function's return value will never be a `None`
   - document the exception-raising behaviour using docstring so that callers will know which `Exception` they should plan to catch
   - see `test_raise_exception()`
+
+### Item 21: Know How Closures Interact with Variable Scope
+
+- See [`closures_variable_scope_test.py`](src/ch03/closures_variable_scope_test.py)
+- Python supports closures - functions that refer to variables from the scope in which they were defined
+- When you reference a variable in an expression, the Python interpreter traverses the scope to resolve the reference in this order:
+  1. the current function's scope
+  2. any enclosing scopes (such as other containing functions)
+  3. the scope of the module that contains the code (also called the global scope)
+  4. the built-in scope (that contains functions like `len` and `str`)
+- If none of these places has defined a variable with the referenced name, then a `NameError` exception is raised
+- Assigning a value to a variable works differently
+  - if the variable is already defined in the current scope, it will just take on the new value
+  - if the variable doesn't exist in the current scope, Python treats the assignment as a variable definition
+    - the scope of the newly defined variable is the function that contains the assignment
+    - this behaviour prevents local variables in a function from polluting the containing module
+    - see `test_sort_not_found()`
+- The `nonlocal` statement is used to indicate that scope traversal should happen upon assignment for a specific variable name
+  - the closure can modify a variable in its enclosing scopes
+  - but will not traverse up to the module-level scope
+  - see `test_sort_found()`
+  - use it only for simple functions
+    - side-effects of `nonlocal` can be hard to follow especially in long functions
+- When your usage of `nonlocal` starts getting complicated, it's better to wrap your state in a helper class
+  - see `test_sort_class()`
 
 ## Source
 
